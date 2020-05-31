@@ -1,2 +1,1 @@
-# space-shooter
-My first game ever
+# galaxy-shooter
