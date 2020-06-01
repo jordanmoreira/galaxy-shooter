@@ -74,6 +74,7 @@
     <Compile Include="Assets\Scripts\SpawnManager.cs" />
     <Compile Include="Assets\Scripts\UIManager.cs" />
     <None Include="Assets\Materials\Shaders\Galaxy.shader" />
+    <None Include="Assets\Sprites\Main_Menu\Background\LICENSE.txt" />
     <Reference Include="UnityEngine">
       <HintPath>F:/Unity/Editors/2019.3.15f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>

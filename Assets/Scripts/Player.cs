@@ -31,6 +31,7 @@ public class Player : MonoBehaviour
     private int _score = 0;
 
     private UIManager _uiManager;
+    private GameManager _gameManager;
 
     [SerializeField]
     private GameObject _leftFire;
@@ -43,15 +44,29 @@ public class Player : MonoBehaviour
     private AudioClip _explosionSoundClip;
     private AudioSource _audioSource;
 
+    public bool _isPlayerOne = false;
+    public bool _isPlayerTwo = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        transform.position = new Vector3(0, 0, 0);
-
         _spawnManager = GameObject.Find("SpawnManager").GetComponent<SpawnManager>();
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         _audioSource = GetComponent<AudioSource>();
+
+        if (_gameManager != null)
+        {
+            if (_gameManager.GetScene() == "Single_Player")
+            {
+                Debug.Log("Playing in single player mode...");
+                transform.position = new Vector3(0, -2.3f, 0);
+            }
+            else if (_gameManager.GetScene() == "Co-Op_Mode")
+            {
+                Debug.Log("Playing in coop mode...");
+                transform.position = new Vector3(-5.6f, -2.3f, 0);
+            }
+        }
 
         if (_spawnManager == null)
         {
@@ -75,45 +90,106 @@ public class Player : MonoBehaviour
     void Update()
     {
         CalculateMovement();
-        if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
-        {
-            Shoot();
-        }
+        IdentifyShooter();
     }
 
     void CalculateMovement()
+    {
+        CalculateMovementPlayerOne();
+        CalculateMovementPlayerTwo();
+    }
+
+    void CalculateMovementPlayerOne()
     {
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
         Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
 
-        transform.Translate(direction * _speed * Time.deltaTime);
-
-        // adding boundaries
-        //if (transform.position.y >= 0)
-        //{
-        //    transform.position = new Vector3(transform.position.x, 0, 0);
-        //}
-        //else if (transform.position.y <= -3.9f)
-        //{
-        //    transform.position = new Vector3(transform.position.x, -3.9f, 0);
-        //}
-        // this is equal to the line below
-        transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, -3.8f, 0), 0);
-
-        if (transform.position.x >= 11.2f)
+        if (_isPlayerOne == true)
         {
-            transform.position = new Vector3(-11.2f, transform.position.y, 0);
+            transform.Translate(direction * _speed * Time.deltaTime);
+
+            // adding boundaries
+            //if (transform.position.y >= 0)
+            //{
+            //    transform.position = new Vector3(transform.position.x, 0, 0);
+            //}
+            //else if (transform.position.y <= -3.9f)
+            //{
+            //    transform.position = new Vector3(transform.position.x, -3.9f, 0);
+            //}
+            // this is equal to the line below
+            transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, -3.8f, 0), 0);
+
+            if (transform.position.x >= 11.2f)
+            {
+                transform.position = new Vector3(-11.2f, transform.position.y, 0);
+            }
+            else if (transform.position.x <= -11.2f)
+            {
+                transform.position = new Vector3(11.2f, transform.position.y, 0);
+            }
         }
-        else if (transform.position.x <= -11.2f)
+    }
+
+    void CalculateMovementPlayerTwo()
+    {
+        //float horizontalInput = Input.GetAxis("Horizontal");
+        //float verticalInput = Input.GetAxis("Vertical");
+        //Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
+
+        if (_isPlayerTwo == true)
         {
-            transform.position = new Vector3(11.2f, transform.position.y, 0);
+            //transform.Translate(direction * _speed * Time.deltaTime);
+
+            if (Input.GetKey(KeyCode.Keypad8))
+            {
+                transform.Translate(Vector3.up * _speed * Time.deltaTime);
+            }
+
+            if (Input.GetKey(KeyCode.Keypad5))
+            {
+                transform.Translate(Vector3.down * _speed * Time.deltaTime);
+            }
+
+            if (Input.GetKey(KeyCode.Keypad4))
+            {
+                transform.Translate(Vector3.left * _speed * Time.deltaTime);
+            }
+
+            if (Input.GetKey(KeyCode.Keypad6))
+            {
+                transform.Translate(Vector3.right * _speed * Time.deltaTime);
+            }
+
+            transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, -3.8f, 0), 0);
+
+            if (transform.position.x >= 11.2f)
+            {
+                transform.position = new Vector3(-11.2f, transform.position.y, 0);
+            }
+            else if (transform.position.x <= -11.2f)
+            {
+                transform.position = new Vector3(11.2f, transform.position.y, 0);
+            }
+        }
+    }
+
+    public void IdentifyShooter()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire && _isPlayerOne == true)
+        {
+            Shoot();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Keypad0) && Time.time > _canFire && _isPlayerTwo == true)
+        {
+            Shoot();
         }
     }
 
     void Shoot()
     {
-
         if (_isTripleShotActive == false)
         {
             _canFire = Time.time + _fireRate;

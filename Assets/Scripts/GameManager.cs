@@ -8,6 +8,14 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private bool _isGameOver;
 
+    public string GetScene()
+    {
+        Scene currentScene = SceneManager.GetActiveScene();
+        string sceneName = currentScene.name;
+
+        return sceneName;
+    }
+
     private void Update()
     {
         GameRestarter();
