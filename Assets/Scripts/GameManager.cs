@@ -24,6 +24,12 @@ public class GameManager : MonoBehaviour
         {
             StartCoroutine(RestartGame());
         }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+
     }
 
     IEnumerator RestartGame()

@@ -51,7 +51,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 4
   _explosionAudioClip: {fileID: 8300000, guid: a885c043fab7e46438bba03ba9dab6bc, type: 3}
+  _laserAudioClip: {fileID: 8300000, guid: 75676f361bdfeaf41a46623e95df3dbc, type: 3}
   _audioSource: {fileID: 532417070}
+  _laserPrefab: {fileID: 4477345766285849989, guid: e6edc0c528e85b04e9e486829752219f,
+    type: 3}
 --- !u!212 &4808850528005778324
 SpriteRenderer:
   m_ObjectHideFlags: 0
