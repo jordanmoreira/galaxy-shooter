@@ -4,26 +4,26 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField]
-    private float _speed = 4f;
+    private bool _enemyShot = false;
+    private float _fireRate = 3.0f;
+    private float _canFire = -1;
+    
+    private Animator _animator;
     private Player _player;
 
-    private Animator _animator;
-
+    [SerializeField]
+    private float _speed = 4f;
+    
     [SerializeField]
     private AudioClip _explosionAudioClip;
     [SerializeField]
     private AudioClip _laserAudioClip;
     [SerializeField]
     private AudioSource _audioSource;
-
     [SerializeField]
     private GameObject _laserPrefab;
 
-    private float _fireRate = 3.0f;
-    private float _canFire = -1;
 
-    private bool _enemyShot = false;
 
     // Start is called before the first frame update
     void Start()
@@ -31,15 +31,15 @@ public class Enemy : MonoBehaviour
         float randomXPosition = Random.Range(-9.1f, 10.1f);
         transform.position = new Vector3(randomXPosition, 5.9f, 0);
 
-        _player = GameObject.Find("Player").GetComponent<Player>();
+        _player = GameObject.FindWithTag("Player").GetComponent<Player>();
         _animator = GetComponent<Animator>();
+        _audioSource = GetComponent<AudioSource>();
 
         if (_player == null)
         {
             Debug.LogError("The Player is NULL");
         }
 
-        _audioSource = GetComponent<AudioSource>();
         //_audioSource.clip = _explosionAudioClip;
     }
 
@@ -65,11 +65,13 @@ public class Enemy : MonoBehaviour
     {
         if (other.tag == "Player")
         {
+            Debug.Log(other.tag);
             Player player = other.transform.GetComponent<Player>();
             if (player != null)
             {
                 player.Damage();
             }
+
             _speed = 0;
             _animator.SetTrigger("OnEnemyDeath");
             _audioSource.clip = _explosionAudioClip;

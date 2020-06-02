@@ -11,6 +11,7 @@ TagManager:
   - UIManager
   - Asteroid
   - Explosion
+  - CoopPlayersManager
   layers:
   - Default
   - TransparentFX

@@ -20,15 +20,20 @@ public class Player : MonoBehaviour
     private float _canFire = -1f;
 
     [SerializeField]
-    private int _lives = 3;
+    private int _playerOneLives = 3;
+    [SerializeField]
+    private int _playerTwoLives = 3;
+    [SerializeField]
+    private int _playerOnescore = 0;
+    [SerializeField]
+    private int _playerTwoScore = 0;
+
     private bool _isTripleShotActive = false;
     private bool _isSpeedActive = false;
     private bool _isShieldActive = false;
 
     [SerializeField]
     private GameObject _playerShield;
-    [SerializeField]
-    private int _score = 0;
 
     private UIManager _uiManager;
     private GameManager _gameManager;
@@ -46,6 +51,7 @@ public class Player : MonoBehaviour
 
     public bool _isPlayerOne = false;
     public bool _isPlayerTwo = false;
+    public int _playerId;
 
     // Start is called before the first frame update
     void Start()
@@ -134,14 +140,8 @@ public class Player : MonoBehaviour
 
     void CalculateMovementPlayerTwo()
     {
-        //float horizontalInput = Input.GetAxis("Horizontal");
-        //float verticalInput = Input.GetAxis("Vertical");
-        //Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
-
         if (_isPlayerTwo == true)
         {
-            //transform.Translate(direction * _speed * Time.deltaTime);
-
             if (Input.GetKey(KeyCode.Keypad8))
             {
                 transform.Translate(Vector3.up * _speed * Time.deltaTime);
@@ -162,6 +162,7 @@ public class Player : MonoBehaviour
                 transform.Translate(Vector3.right * _speed * Time.deltaTime);
             }
 
+            // adding boundaries to player two
             transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, -3.8f, 0), 0);
 
             if (transform.position.x >= 11.2f)
@@ -214,28 +215,58 @@ public class Player : MonoBehaviour
             return;
         }
 
-        _lives -= 1;
-        _uiManager.UpdateLives(_lives);
-
-        switch (_lives)
+        if (_isPlayerOne)
         {
-            case 1:
-                _lives = 1;
-                _rightFire.SetActive(true);
-                break;
-            case 2:
-                _lives = 2;
-                _leftFire.SetActive(true);
-                break;
+            _playerOneLives -= 1;
+            _uiManager.UpdateLives(_playerOneLives, 0);
+
+            switch (_playerOneLives)
+            {
+                case 1:
+                    _playerOneLives = 1;
+                    _rightFire.SetActive(true);
+                    break;
+                case 2:
+                    _playerOneLives = 2;
+                    _leftFire.SetActive(true);
+                    break;
+            }
+
+            if (_playerOneLives < 1)
+            {
+                _spawnManager.OnPlayerDeath();
+                Destroy(this.gameObject);
+                _audioSource.clip = _explosionSoundClip;
+                _audioSource.Play();
+            }
         }
 
-        if (_lives < 1)
+        if (_isPlayerTwo)
         {
-            _spawnManager.OnPlayerDeath();
-            Destroy(this.gameObject);
-            _audioSource.clip = _explosionSoundClip;
-            _audioSource.Play();
+            _playerTwoLives -= 1;
+            _uiManager.UpdateLives(_playerTwoLives, 1);
+
+            switch (_playerTwoLives)
+            {
+                case 1:
+                    _playerTwoLives = 1;
+                    _rightFire.SetActive(true);
+                    break;
+                case 2:
+                    _playerTwoLives = 2;
+                    _leftFire.SetActive(true);
+                    break;
+            }
+
+            if (_playerTwoLives < 1)
+            {
+                _spawnManager.OnPlayerDeath();
+                Destroy(this.gameObject);
+                _audioSource.clip = _explosionSoundClip;
+                _audioSource.Play();
+            }
         }
+
     }
 
     public void TripleShotActive()
@@ -283,12 +314,32 @@ public class Player : MonoBehaviour
 
     public void IncreaseScore(int points)
     {
-        _score += points;
-        _uiManager.UpdateScore(_score);
+        if (_isPlayerOne == true)
+        {
+            Debug.Log("player 1 score increased");
+            _playerOnescore += points;
+            _uiManager.UpdateScore(_playerOnescore, 0);
+        }
+
+        if (_isPlayerTwo == true)
+        {
+            Debug.Log("player 2 score increased");
+            _playerTwoScore += points;
+            _uiManager.UpdateScore(_playerTwoScore, 1);
+        }
     }
 
     public int GetScore()
     {
-        return _score;
+        if (_isPlayerOne)
+        {
+            return _playerOnescore;
+        }
+        if (_isPlayerTwo)
+        {
+            return _playerTwoScore;
+        }
+
+        return 0;
     }
 }

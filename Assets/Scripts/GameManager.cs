@@ -7,6 +7,8 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField]
     private bool _isGameOver;
+    [SerializeField]
+    private GameObject _pauseMenu;
 
     public string GetScene()
     {
@@ -19,6 +21,7 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         GameRestarter();
+        PauseGame();
     }
 
     public void GameOver()
@@ -47,6 +50,15 @@ public class GameManager : MonoBehaviour
         while (!asyncLoad.isDone)
         {
             yield return null;
+        }
+    }
+
+    public void PauseGame()
+    {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Time.timeScale = 0;
+            _pauseMenu.SetActive(true);
         }
     }
 }

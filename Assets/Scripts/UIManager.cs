@@ -6,9 +6,15 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
     [SerializeField]
-    private Text _scoreText;
+    private Text _playerOneScoreText;
     [SerializeField]
-    private Image _livesImg;
+    private Text _playerTwoScoreText;
+
+    [SerializeField]
+    private Image _playerOneLivesImg;
+    [SerializeField]
+    private Image _playerTwoLivesImg;
+
     [SerializeField]
     private Sprite[] _liveSprites;
     [SerializeField]
@@ -29,21 +35,47 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void UpdateScore(int playerScore)
+    public void UpdateScore(int playerScore, int playerId)
     {
-        _scoreText.text = "Score:" + playerScore.ToString();
-        _gameOverText.gameObject.SetActive(false);
+        if (playerId == 0)
+        {
+            _playerOneScoreText.text = "Score:" + playerScore.ToString();
+            _gameOverText.gameObject.SetActive(false);
+        }
+
+        if (playerId == 1)
+        {
+            _playerTwoScoreText.text = "Score:" + playerScore.ToString();
+            _gameOverText.gameObject.SetActive(false);
+        }
     }
 
-    public void UpdateLives(int currentLives)
+    public void UpdateLives(int currentLives, int playerId)
     {
-        _livesImg.sprite = _liveSprites[currentLives];
-
-        if (currentLives < 1)
+        if (playerId == 0)
         {
-            _gameManager.GameOver();
-            DisplayGameOver(true);
-            StartCoroutine(TextFlicker(_gameOverText));
+            Debug.Log("player 1 lives updated");
+            _playerOneLivesImg.sprite = _liveSprites[currentLives];
+
+            if (currentLives < 1)
+            {
+                _gameManager.GameOver();
+                DisplayGameOver(true);
+                StartCoroutine(TextFlicker(_gameOverText));
+            }
+        }
+
+        if (playerId == 1)
+        {
+            Debug.Log("player 2 lives updated");
+            _playerTwoLivesImg.sprite = _liveSprites[currentLives];
+
+            if (currentLives < 1)
+            {
+                _gameManager.GameOver();
+                DisplayGameOver(true);
+                StartCoroutine(TextFlicker(_gameOverText));
+            }
         }
     }
 
