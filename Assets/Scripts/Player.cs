@@ -111,7 +111,7 @@ public class Player : MonoBehaviour
         float verticalInput = Input.GetAxis("Vertical");
         Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
 
-        if (_isPlayerOne == true)
+        if (_playerId == 0)
         {
             transform.Translate(direction * _speed * Time.deltaTime);
 
@@ -140,7 +140,7 @@ public class Player : MonoBehaviour
 
     void CalculateMovementPlayerTwo()
     {
-        if (_isPlayerTwo == true)
+        if (_playerId == 1)
         {
             if (Input.GetKey(KeyCode.Keypad8))
             {
@@ -178,12 +178,12 @@ public class Player : MonoBehaviour
 
     public void IdentifyShooter()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire && _isPlayerOne == true)
+        if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire && _playerId == 0)
         {
             Shoot();
         }
 
-        if (Input.GetKeyDown(KeyCode.Keypad0) && Time.time > _canFire && _isPlayerTwo == true)
+        if (Input.GetKeyDown(KeyCode.Keypad0) && Time.time > _canFire && _playerId == 1)
         {
             Shoot();
         }
@@ -215,10 +215,10 @@ public class Player : MonoBehaviour
             return;
         }
 
-        if (_isPlayerOne)
+        if (_playerId == 0)
         {
             _playerOneLives -= 1;
-            _uiManager.UpdateLives(_playerOneLives, 0);
+            _uiManager.UpdateLives(_playerOneLives, _playerId);
 
             switch (_playerOneLives)
             {
@@ -241,10 +241,10 @@ public class Player : MonoBehaviour
             }
         }
 
-        if (_isPlayerTwo)
+        if (_playerId == 1)
         {
             _playerTwoLives -= 1;
-            _uiManager.UpdateLives(_playerTwoLives, 1);
+            _uiManager.UpdateLives(_playerTwoLives, _playerId);
 
             switch (_playerTwoLives)
             {
@@ -314,18 +314,18 @@ public class Player : MonoBehaviour
 
     public void IncreaseScore(int points)
     {
-        if (_isPlayerOne == true)
+        if (_playerId == 0)
         {
             Debug.Log("player 1 score increased");
             _playerOnescore += points;
-            _uiManager.UpdateScore(_playerOnescore, 0);
+            _uiManager.UpdateScore(_playerOnescore, _playerId);
         }
 
-        if (_isPlayerTwo == true)
+        if (_playerId == 1)
         {
             Debug.Log("player 2 score increased");
             _playerTwoScore += points;
-            _uiManager.UpdateScore(_playerTwoScore, 1);
+            _uiManager.UpdateScore(_playerTwoScore, _playerId);
         }
     }
 

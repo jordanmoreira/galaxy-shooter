@@ -45,12 +45,19 @@ public class GameManager : MonoBehaviour
 
     IEnumerator RestartGame()
     {
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(1); // Game Game Scene
+        Scene currentScene = SceneManager.GetActiveScene();
 
-        while (!asyncLoad.isDone)
+        if (currentScene.name == "Single_Player")
         {
-            yield return null;
+            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(1); // Game Game Scene
         }
+
+        if (currentScene.name == "Co-Op_Mode")
+        {
+            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(2); // Game Game Scene
+        }
+
+        yield return null;
     }
 
     public void PauseGame()

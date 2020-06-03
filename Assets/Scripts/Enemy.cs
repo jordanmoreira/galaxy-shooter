@@ -7,13 +7,13 @@ public class Enemy : MonoBehaviour
     private bool _enemyShot = false;
     private float _fireRate = 3.0f;
     private float _canFire = -1;
-    
+
     private Animator _animator;
     private Player _player;
 
     [SerializeField]
     private float _speed = 4f;
-    
+
     [SerializeField]
     private AudioClip _explosionAudioClip;
     [SerializeField]
@@ -22,8 +22,6 @@ public class Enemy : MonoBehaviour
     private AudioSource _audioSource;
     [SerializeField]
     private GameObject _laserPrefab;
-
-
 
     // Start is called before the first frame update
     void Start()
@@ -39,8 +37,6 @@ public class Enemy : MonoBehaviour
         {
             Debug.LogError("The Player is NULL");
         }
-
-        //_audioSource.clip = _explosionAudioClip;
     }
 
     // Update is called once per frame
@@ -65,7 +61,6 @@ public class Enemy : MonoBehaviour
     {
         if (other.tag == "Player")
         {
-            Debug.Log(other.tag);
             Player player = other.transform.GetComponent<Player>();
             if (player != null)
             {
@@ -83,26 +78,17 @@ public class Enemy : MonoBehaviour
 
         if (other.tag == "Laser")
         {
-            Laser laser = other.GetComponent<Laser>();
-            bool enemyLaser = laser.GetEnemyLaser();
+            Destroy(other.gameObject);
 
-            if (enemyLaser == false)
-            {
-                Destroy(other.gameObject);
+            _speed = 0;
+            _animator.SetTrigger("OnEnemyDeath");
+            _audioSource.clip = _explosionAudioClip;
+            _audioSource.Play();
 
-                _speed = 0;
-                _animator.SetTrigger("OnEnemyDeath");
-                _audioSource.clip = _explosionAudioClip;
-                _audioSource.Play();
+            Destroy(GetComponent<Collider2D>());
+            Destroy(this.gameObject, 2.8f);
 
-                Destroy(GetComponent<Collider2D>());
-                Destroy(this.gameObject, 2.8f);
-            }
-
-            if (_player != null)
-            {
-                _player.IncreaseScore(10);
-            }
+            _player.IncreaseScore(10);
         }
     }
 

@@ -374,6 +374,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Main_Menu
       objectReference: {fileID: 0}
+    - target: {fileID: 3764358890952420669, guid: 3d95bd45d1ccc0642be001aa35748b51,
+        type: 3}
+      propertyPath: _spawnManager
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 3764358890952420670, guid: 3d95bd45d1ccc0642be001aa35748b51,
         type: 3}
       propertyPath: m_LocalPosition.x
