@@ -54,7 +54,6 @@ public class UIManager : MonoBehaviour
     {
         if (playerId == 0)
         {
-            Debug.Log("player 1 lives updated");
             _playerOneLivesImg.sprite = _liveSprites[currentLives];
 
             if (currentLives < 1)
@@ -67,7 +66,6 @@ public class UIManager : MonoBehaviour
 
         if (playerId == 1)
         {
-            Debug.Log("player 2 lives updated");
             _playerTwoLivesImg.sprite = _liveSprites[currentLives];
 
             if (currentLives < 1)

@@ -30,7 +30,7 @@ public class Powerup : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.tag == "Player")
+        if (other.tag == "PlayerOne" || other.tag == "PlayerTwo")
         {
             AudioSource.PlayClipAtPoint(_powerupPickupAudioClip, transform.position);
 

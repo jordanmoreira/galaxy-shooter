@@ -73,7 +73,6 @@ public class Player : MonoBehaviour
                 transform.position = new Vector3(-5.6f, -2.3f, 0);
             }
         }
-
         if (_spawnManager == null)
         {
             Debug.LogError("The Spawn Manager is NULL.");
@@ -111,7 +110,7 @@ public class Player : MonoBehaviour
         float verticalInput = Input.GetAxis("Vertical");
         Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
 
-        if (_playerId == 0)
+        if (this.gameObject.tag == "PlayerOne")
         {
             transform.Translate(direction * _speed * Time.deltaTime);
 
@@ -140,7 +139,7 @@ public class Player : MonoBehaviour
 
     void CalculateMovementPlayerTwo()
     {
-        if (_playerId == 1)
+        if (this.gameObject.tag == "PlayerTwo")
         {
             if (Input.GetKey(KeyCode.Keypad8))
             {
@@ -178,12 +177,12 @@ public class Player : MonoBehaviour
 
     public void IdentifyShooter()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire && _playerId == 0)
+        if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire && this.gameObject.tag == "PlayerOne")
         {
             Shoot();
         }
 
-        if (Input.GetKeyDown(KeyCode.Keypad0) && Time.time > _canFire && _playerId == 1)
+        if (Input.GetKeyDown(KeyCode.Keypad0) && Time.time > _canFire && this.gameObject.tag == "PlayerTwo")
         {
             Shoot();
         }
@@ -191,18 +190,41 @@ public class Player : MonoBehaviour
 
     void Shoot()
     {
-        if (_isTripleShotActive == false)
+        if (gameObject.tag == "PlayerOne")
         {
-            _canFire = Time.time + _fireRate;
-            Instantiate(_laserPrefab, transform.position + (_laserPrefab.transform.up * 0.8f), Quaternion.identity);
+            if (_isTripleShotActive == false)
+            {
+                _canFire = Time.time + _fireRate;
+                GameObject laser = Instantiate(_laserPrefab, transform.position + (_laserPrefab.transform.up * 0.8f), Quaternion.identity);
+                laser.GetComponent<Laser>().AssignPlayerOneLaser();
+            }
+
+            if (_isTripleShotActive == true)
+            {
+                _canFire = Time.time + _fireRate;
+                GameObject laser = Instantiate(_tripleShotPrefab, transform.position + (_tripleShotPrefab.transform.up * 0.8f), Quaternion.identity);
+                laser.GetComponent<Laser>().AssignPlayerOneLaser();
+            }
+            _audioSource.Play();
         }
 
-        if (_isTripleShotActive == true)
+        if (gameObject.tag == "PlayerTwo")
         {
-            _canFire = Time.time + _fireRate;
-            Instantiate(_tripleShotPrefab, transform.position + (_tripleShotPrefab.transform.up * 0.8f), Quaternion.identity);
+            if (_isTripleShotActive == false)
+            {
+                _canFire = Time.time + _fireRate;
+                GameObject laser = Instantiate(_laserPrefab, transform.position + (_laserPrefab.transform.up * 0.8f), Quaternion.identity);
+                laser.GetComponent<Laser>().AssignPlayerTwoLaser();
+            }
+
+            if (_isTripleShotActive == true)
+            {
+                _canFire = Time.time + _fireRate;
+                GameObject laser = Instantiate(_tripleShotPrefab, transform.position + (_tripleShotPrefab.transform.up * 0.8f), Quaternion.identity);
+                laser.GetComponent<Laser>().AssignPlayerTwoLaser();
+            }
+            _audioSource.Play();
         }
-        _audioSource.Play();
     }
 
     public void Damage()
@@ -215,10 +237,10 @@ public class Player : MonoBehaviour
             return;
         }
 
-        if (_playerId == 0)
+        if (this.gameObject.tag == "PlayerOne")
         {
             _playerOneLives -= 1;
-            _uiManager.UpdateLives(_playerOneLives, _playerId);
+            _uiManager.UpdateLives(_playerOneLives, 0);
 
             switch (_playerOneLives)
             {
@@ -241,10 +263,10 @@ public class Player : MonoBehaviour
             }
         }
 
-        if (_playerId == 1)
+        if (this.gameObject.tag == "PlayerTwo")
         {
             _playerTwoLives -= 1;
-            _uiManager.UpdateLives(_playerTwoLives, _playerId);
+            _uiManager.UpdateLives(_playerTwoLives, 1);
 
             switch (_playerTwoLives)
             {
@@ -314,32 +336,16 @@ public class Player : MonoBehaviour
 
     public void IncreaseScore(int points)
     {
-        if (_playerId == 0)
+        if (this.gameObject.tag == "PlayerOne")
         {
-            Debug.Log("player 1 score increased");
             _playerOnescore += points;
-            _uiManager.UpdateScore(_playerOnescore, _playerId);
+            _uiManager.UpdateScore(_playerOnescore, 0);
         }
 
-        if (_playerId == 1)
+        if (this.gameObject.tag == "PlayerTwo")
         {
-            Debug.Log("player 2 score increased");
             _playerTwoScore += points;
-            _uiManager.UpdateScore(_playerTwoScore, _playerId);
+            _uiManager.UpdateScore(_playerTwoScore, 1);
         }
-    }
-
-    public int GetScore()
-    {
-        if (_isPlayerOne)
-        {
-            return _playerOnescore;
-        }
-        if (_isPlayerTwo)
-        {
-            return _playerTwoScore;
-        }
-
-        return 0;
     }
 }

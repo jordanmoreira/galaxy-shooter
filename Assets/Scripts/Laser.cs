@@ -8,6 +8,9 @@ public class Laser : MonoBehaviour
     private float speed = 8.5f;
 
     private bool _isEnemyLaser = false;
+    private bool _isPlayerOneLaser = false;
+    private bool _isPlayerTwoLaser = false;
+
 
     // Update is called once per frame
     void Update()
@@ -15,8 +18,8 @@ public class Laser : MonoBehaviour
         CalculateSpeed();
     }
 
-    // tell the laser that if its fro man enemy it will go down Vector3.down
-    void CalculateSpeed()
+    // tell the laser that if its from an enemy it will go down Vector3.down
+    private void CalculateSpeed()
     {
         if (_isEnemyLaser == false)
         {
@@ -28,8 +31,7 @@ public class Laser : MonoBehaviour
             MoveDown();
         }
     }
-
-    public void MoveUp()
+    private void MoveUp()
     {
         transform.Translate(Vector3.up * speed * Time.deltaTime);
 
@@ -42,8 +44,7 @@ public class Laser : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
-
-    public void MoveDown()
+    private void MoveDown()
     {
         transform.Translate(Vector3.down * speed * Time.deltaTime);
 
@@ -61,18 +62,35 @@ public class Laser : MonoBehaviour
     {
         _isEnemyLaser = true;
     }
-
     public bool GetEnemyLaser()
     {
         return _isEnemyLaser;
     }
 
+    public void AssignPlayerOneLaser()
+    {
+        _isPlayerOneLaser = true;
+    }
+    public bool GetPlayerOneLaser()
+    {
+        return _isPlayerOneLaser;
+    }
+
+    public void AssignPlayerTwoLaser()
+    {
+        _isPlayerTwoLaser = true;
+    }
+    public bool GetPlayerTwoLaser()
+    {
+        return _isPlayerTwoLaser;
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Player player = GameObject.FindWithTag("Player").GetComponent<Player>();
-
-        if (other.tag == "Player" && _isEnemyLaser == true)
+        if ((other.tag == "PlayerOne" || other.tag == "PlayerTwo") && _isEnemyLaser == true)
         {
+            Player player = other.transform.GetComponent<Player>();
+
             if (player != null)
             {
                 player.Damage();

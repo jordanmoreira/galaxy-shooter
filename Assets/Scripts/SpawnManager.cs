@@ -26,7 +26,6 @@ public class SpawnManager : MonoBehaviour
     void Start()
     {
         print("Starting " + Time.time);
-        SpawnPlayers();
     }
 
     public void StartEnemySpawn()
@@ -64,31 +63,31 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
-    public void SpawnPlayers()
-    {
-        Scene currentScene = SceneManager.GetActiveScene();
+    //public void SpawnPlayers()
+    //{
+    //    Scene currentScene = SceneManager.GetActiveScene();
 
-        if (currentScene.name == "Single_Player")
-        {
-            Vector3 playerOnePosition = new Vector3(-2.9f, -3.3f, 0);
-            _players[0] = Instantiate(_playerPrefab, playerOnePosition, Quaternion.identity);
-            _players[0].GetComponent<Player>()._playerId = 0;
-            _players[0].transform.parent = _playerContainer.transform;
-        }
+    //    if (currentScene.name == "Single_Player")
+    //    {
+    //        Vector3 playerOnePosition = new Vector3(-2.9f, -3.3f, 0);
+    //        _players[0] = Instantiate(_playerPrefab, playerOnePosition, Quaternion.identity);
+    //        _players[0].GetComponent<Player>()._playerId = 0;
+    //        _players[0].transform.parent = _playerContainer.transform;
+    //    }
 
-        if (currentScene.name == "Co-Op_Mode")
-        {
-            Vector3 playerOnePosition = new Vector3(-8.9f, -3.3f, 0);
-            _players[0] = Instantiate(_playerPrefab, playerOnePosition, Quaternion.identity);
-            _players[0].GetComponent<Player>()._playerId = 0;
-            _players[0].transform.parent = _playerContainer.transform;
+    //    if (currentScene.name == "Co-Op_Mode")
+    //    {
+    //        Vector3 playerOnePosition = new Vector3(-8.9f, -3.3f, 0);
+    //        _players[0] = Instantiate(_playerPrefab, playerOnePosition, Quaternion.identity);
+    //        _players[0].GetComponent<Player>()._playerId = 0;
+    //        _players[0].transform.parent = _playerContainer.transform;
 
-            Vector3 playerTwoPosition = new Vector3(8.2f, -3.3f, 0);
-            _players[1] = Instantiate(_playerPrefab, playerTwoPosition, Quaternion.identity);
-            _players[1].GetComponent<Player>()._playerId = 1;
-            _players[1].transform.parent = _playerContainer.transform;
-        }
-    }
+    //        Vector3 playerTwoPosition = new Vector3(8.2f, -3.3f, 0);
+    //        _players[1] = Instantiate(_playerPrefab, playerTwoPosition, Quaternion.identity);
+    //        _players[1].GetComponent<Player>()._playerId = 1;
+    //        _players[1].transform.parent = _playerContainer.transform;
+    //    }
+    //}
 
     public void OnPlayerDeath()
     {

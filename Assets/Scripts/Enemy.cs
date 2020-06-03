@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
@@ -9,7 +7,8 @@ public class Enemy : MonoBehaviour
     private float _canFire = -1;
 
     private Animator _animator;
-    private Player _player;
+    private Player _playerOne;
+    private Player _playerTwo;
 
     [SerializeField]
     private float _speed = 4f;
@@ -22,6 +21,8 @@ public class Enemy : MonoBehaviour
     private AudioSource _audioSource;
     [SerializeField]
     private GameObject _laserPrefab;
+    [SerializeField]
+    private GameManager _gameManager;
 
     // Start is called before the first frame update
     void Start()
@@ -29,13 +30,21 @@ public class Enemy : MonoBehaviour
         float randomXPosition = Random.Range(-9.1f, 10.1f);
         transform.position = new Vector3(randomXPosition, 5.9f, 0);
 
-        _player = GameObject.FindWithTag("Player").GetComponent<Player>();
+        //Scene currentScene = currentScene.Act
+        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+
+        _playerOne = GameObject.FindWithTag("PlayerOne").GetComponent<Player>();
+        if (_gameManager.GetScene() == "Co-Op_Mode")
+        {
+            _playerTwo = GameObject.FindWithTag("PlayerTwo").GetComponent<Player>();
+        }
+
         _animator = GetComponent<Animator>();
         _audioSource = GetComponent<AudioSource>();
 
-        if (_player == null)
+        if (_playerOne && _playerTwo == null)
         {
-            Debug.LogError("The Player is NULL");
+            Debug.LogError("One player is NULL");
         }
     }
 
@@ -59,7 +68,7 @@ public class Enemy : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.tag == "Player")
+        if (other.tag == "PlayerOne" || other.tag == "PlayerTwo")
         {
             Player player = other.transform.GetComponent<Player>();
             if (player != null)
@@ -78,17 +87,29 @@ public class Enemy : MonoBehaviour
 
         if (other.tag == "Laser")
         {
-            Destroy(other.gameObject);
+            Laser laser = other.transform.GetComponent<Laser>();
+            if (laser.GetEnemyLaser() == false)
+            {
+                Destroy(other.gameObject);
 
-            _speed = 0;
-            _animator.SetTrigger("OnEnemyDeath");
-            _audioSource.clip = _explosionAudioClip;
-            _audioSource.Play();
+                _speed = 0;
+                _animator.SetTrigger("OnEnemyDeath");
+                _audioSource.clip = _explosionAudioClip;
+                _audioSource.Play();
 
-            Destroy(GetComponent<Collider2D>());
-            Destroy(this.gameObject, 2.8f);
+                Destroy(GetComponent<Collider2D>());
+                Destroy(this.gameObject, 2.8f);
+            }
 
-            _player.IncreaseScore(10);
+            if (laser.GetPlayerOneLaser() == true)
+            {
+                _playerOne.IncreaseScore(10);
+            }
+
+            if (laser.GetPlayerTwoLaser() == true)
+            {
+                _playerTwo.IncreaseScore(10);
+            }
         }
     }
 
