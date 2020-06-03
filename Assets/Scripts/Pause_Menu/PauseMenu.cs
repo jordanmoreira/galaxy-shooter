@@ -12,5 +12,6 @@ public class PauseMenu : MonoBehaviour
     public void MainMenu()
     {
         SceneManager.LoadSceneAsync(0); // main menu scene
+        Time.timeScale = 1.0f;
     }
 }

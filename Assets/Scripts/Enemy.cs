@@ -30,21 +30,13 @@ public class Enemy : MonoBehaviour
         float randomXPosition = Random.Range(-9.1f, 10.1f);
         transform.position = new Vector3(randomXPosition, 5.9f, 0);
 
-        //Scene currentScene = currentScene.Act
+        _animator = GetComponent<Animator>();
+        _audioSource = GetComponent<AudioSource>();
         _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-
         _playerOne = GameObject.FindWithTag("PlayerOne").GetComponent<Player>();
         if (_gameManager.GetScene() == "Co-Op_Mode")
         {
             _playerTwo = GameObject.FindWithTag("PlayerTwo").GetComponent<Player>();
-        }
-
-        _animator = GetComponent<Animator>();
-        _audioSource = GetComponent<AudioSource>();
-
-        if (_playerOne && _playerTwo == null)
-        {
-            Debug.LogError("One player is NULL");
         }
     }
 
